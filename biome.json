@@ -146,14 +146,6 @@
         "noProcessGlobal": "error",
         "noReactPropAssignments": "error",
         "noRenderReturnValue": "error",
-        "noRestrictedElements": {
-          "level": "error",
-          "options": {
-            "elements": {
-              "input": "input is not allowed, use Input component instead"
-            }
-          }
-        },
         "noSelfAssign": "error",
         "noSetterReturn": "error",
         "noStringCaseMismatch": "error",

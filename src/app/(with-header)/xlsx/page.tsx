@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { read, utils, writeFile } from "xlsx"
 import { z } from "zod"
+import { readFileAsArrayBuffer } from "@/utils/readFile"
 
 const rowDataSchema = z.object({
   name: z.string().nonempty(),
@@ -21,21 +22,6 @@ const initialSheetData = [
   { name: "Donald Trump", index: 45 },
   { name: "Joseph Biden", index: 46 },
 ] as const satisfies RowData[]
-
-const readFile = (file: File) =>
-  new Promise<ArrayBuffer>((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => {
-      const { result } = reader
-      if (result instanceof ArrayBuffer) {
-        resolve(result)
-      } else {
-        reject(new Error("Invalid file"))
-      }
-    }
-    reader.onerror = reject
-    reader.readAsArrayBuffer(file)
-  })
 
 const readSheet = (buf: ArrayBuffer) => {
   const workbook = read(buf, {
@@ -94,14 +80,14 @@ export default function Page() {
       return
     }
 
-    try {
-      const buf = await readFile(file)
-      const data = readSheet(buf)
+    const result = await readFileAsArrayBuffer(file)
+    if (result.success) {
+      const data = readSheet(result.data)
       toast.success("File read successfully", {
         description: JSON.stringify(data),
       })
-    } catch (error) {
-      toast.error(`Failed to read file: ${getErrorMessage(error)}`)
+    } else {
+      toast.error(`Failed to read file: ${getErrorMessage(result.error)}`)
     }
   }
 
@@ -111,13 +97,13 @@ export default function Page() {
       return
     }
 
-    try {
-      const buf = await readFile(file)
+    const result = await readFileAsArrayBuffer(file)
+    if (result.success) {
       toast.success("File read successfully", {
-        description: buf.byteLength,
+        description: result.data.byteLength,
       })
-    } catch (error) {
-      toast.error(`Failed to read file: ${getErrorMessage(error)}`)
+    } else {
+      toast.error(`Failed to read file: ${getErrorMessage(result.error)}`)
     }
   }
 

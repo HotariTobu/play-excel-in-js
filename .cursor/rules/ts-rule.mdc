@@ -1,0 +1,6 @@
+---
+globs: *.ts,*.tsx
+alwaysApply: false
+---
+
+- Use `z.input` or `z.output` instead of `z.infer`

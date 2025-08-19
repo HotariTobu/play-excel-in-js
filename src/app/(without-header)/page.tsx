@@ -5,6 +5,7 @@ export default function Home() {
     <>
       <h1>Home</h1>
       <Link href="/xlsx">XLSX</Link>
+      <Link href="/exceljs">ExcelJS</Link>
     </>
   )
 }

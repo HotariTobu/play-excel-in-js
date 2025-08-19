@@ -2,9 +2,9 @@
   "configurations": [
     {
       "type": "chrome",
-      "name": "http://localhost:3000/xlsx",
+      "name": "Launch Chrome",
       "request": "launch",
-      "url": "http://localhost:3000/xlsx"
+      "url": "http://localhost:3000/"
     }
   ]
 }

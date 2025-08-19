@@ -39,3 +39,29 @@ export const readFileAsArrayBuffer = (file: File) =>
     )
     reader.readAsArrayBuffer(file)
   })
+
+export const readFileAsDataUrl = (file: File) =>
+  new Promise<Result<string>>((resolve) => {
+    const reader = createReader(
+      (data) => {
+        if (typeof data === "string") {
+          resolve({
+            success: true,
+            data,
+          })
+        } else {
+          resolve({
+            success: false,
+            error: new Error("Invalid file"),
+          })
+        }
+      },
+      (error) => {
+        resolve({
+          success: false,
+          error,
+        })
+      }
+    )
+    reader.readAsDataURL(file)
+  })

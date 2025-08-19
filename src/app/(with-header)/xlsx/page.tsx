@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { read, utils, writeFile } from "xlsx"
 import { z } from "zod"
-import { readFileAsArrayBuffer } from "@/utils/readFile"
+import { readFileAsArrayBuffer } from "@/utils/read-file"
 
 const rowDataSchema = z.object({
   name: z.string().nonempty(),

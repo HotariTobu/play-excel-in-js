@@ -2,14 +2,17 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Workbook } from "exceljs"
-import { useRef } from "react"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
+import { ImageFileArea } from "@/components/image-file-area"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import type { Result } from "@/types/result"
-import { determineImageType } from "@/utils/determineImageType"
-import { downloadFile } from "@/utils/downloadFile"
-import { readFileAsArrayBuffer } from "@/utils/readFile"
+import { determineImageType } from "@/utils/determine-image-type"
+import { downloadFile } from "@/utils/download-file"
+import { readFileAsArrayBuffer } from "@/utils/read-file"
 
 const SUPPORTED_IMAGE_TYPES = ["png", "jpeg", "gif"] as const
 const CELL_RANGE_REGEX = /^[A-Z]{1,3}[1-9][0-9]*(?::[A-Z]{1,3}[1-9][0-9]*)?$/
@@ -79,20 +82,14 @@ export default function Page() {
     },
   })
 
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [imageFile, setImageFile] = useState<File | null>(null)
 
   const handleSubmit = async (data: z.output<typeof formSchema>) => {
-    const fileInput = fileInputRef.current
-    if (fileInput == null) {
+    if (imageFile == null) {
       return
     }
 
-    const file = fileInput.files?.[0]
-    if (typeof file === "undefined") {
-      return
-    }
-
-    const imageBufferResult = await readFileAsArrayBuffer(file)
+    const imageBufferResult = await readFileAsArrayBuffer(imageFile)
     if (!imageBufferResult.success) {
       toast.error(imageBufferResult.error.message)
       return
@@ -110,16 +107,15 @@ export default function Page() {
   }
 
   return (
-    <form onSubmit={form.handleSubmit(handleSubmit)}>
-      <label>
-        Upload Image
-        <input type="file" accept="image/*" ref={fileInputRef} />
-      </label>
-      <label>
-        Cell Range
-        <input placeholder="A1:B2" {...form.register("range")} />
-      </label>
-      <button type="submit">Add</button>
-    </form>
+    <>
+      <ImageFileArea onUpload={setImageFile} />
+      <form onSubmit={form.handleSubmit(handleSubmit)}>
+        <label>
+          Cell Range
+          <Input placeholder="A1:B2" {...form.register("range")} />
+        </label>
+        <Button type="submit">Insert & Create</Button>
+      </form>
+    </>
   )
 }

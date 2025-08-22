@@ -1,7 +1,8 @@
 import { useBlobUrl } from "@/hooks/use-blob-url"
+import { cn } from "@/utils/merge-class"
 import { FileArea } from "./file-area"
 
-export const ImageFileArea = (props: { onUpload: (file: File) => void }) => {
+export const ImageFileArea = (props: { className?: string; onUpload: (file: File) => void }) => {
   const [imageUrl, setImageFileForBlobUrl] = useBlobUrl()
 
   const handleUpload = (file: File) => {
@@ -10,19 +11,20 @@ export const ImageFileArea = (props: { onUpload: (file: File) => void }) => {
   }
 
   return (
-    <FileArea accept="image/*" onUpload={handleUpload}>
-      <div className="border border-gray-300 hover:border-gray-400 border-dashed rounded-md p-4 flex items-center justify-center">
-        {imageUrl === null ? (
-          <p>Upload Image</p>
-        ) : (
-          // biome-ignore lint/performance/noImgElement: This image is in browser only
-          <img
-            className="flex-1 max-w-container max-h-40 object-contain"
-            src={imageUrl}
-            alt="Preview"
-          />
-        )}
-      </div>
+    <FileArea
+      className={cn(
+        "border border-gray-300 hover:border-gray-400 border-dashed rounded-md p-4 flex flex-col items-center justify-center",
+        props.className
+      )}
+      accept="image/*"
+      onUpload={handleUpload}
+    >
+      {imageUrl === null ? (
+        <p>Upload Image</p>
+      ) : (
+        // biome-ignore lint/performance/noImgElement: This image is in browser only
+        <img className="flex-1 min-h-0 object-contain" src={imageUrl} alt="Preview" />
+      )}
     </FileArea>
   )
 }

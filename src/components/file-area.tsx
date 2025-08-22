@@ -1,6 +1,7 @@
 import { type ChangeEvent, type ReactNode, useRef } from "react"
 
 export const FileArea = (props: {
+  className?: string
   accept: string
   children: ReactNode
   onUpload: (file: File) => void
@@ -17,7 +18,7 @@ export const FileArea = (props: {
   }
 
   return (
-    <label>
+    <label className={props.className}>
       {props.children}
       <input hidden type="file" accept={props.accept} ref={fileInputRef} onChange={handleChange} />
     </label>

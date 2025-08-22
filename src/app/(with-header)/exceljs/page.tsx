@@ -108,7 +108,7 @@ export default function Page() {
 
   return (
     <>
-      <ImageFileArea onUpload={setImageFile} />
+      <ImageFileArea className="max-w-container max-h-40 flex" onUpload={setImageFile} />
       <form onSubmit={form.handleSubmit(handleSubmit)}>
         <label>
           Cell Range

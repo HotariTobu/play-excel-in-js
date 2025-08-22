@@ -7,6 +7,7 @@ import { FileArea } from "@/components/file-area"
 import { ImageFileArea } from "@/components/image-file-area"
 import { useLazyResult } from "@/hooks/use-lazy-result"
 import type { LazyResult } from "@/types/lazy-result"
+import { asError } from "@/utils/as-error"
 import { readFileAsArrayBuffer } from "@/utils/read-file"
 
 const readSheet = (buf: ArrayBuffer) => {
@@ -50,14 +51,6 @@ const useSheetHtml = (): [LazyResult<string>, SetFile] => {
   return [sheetHtmlResult, setSheetFile]
 }
 
-const getErrorMessage = (error: unknown) => {
-  if (error instanceof Error) {
-    return error.message
-  }
-
-  return String(error)
-}
-
 export default function Page() {
   const [sheetHtmlResult, handleXlsxUpload] = useSheetHtml()
 
@@ -68,7 +61,8 @@ export default function Page() {
         description: result.data.byteLength,
       })
     } else {
-      toast.error(`Failed to read file: ${getErrorMessage(result.error)}`)
+      const { message } = asError(result.error)
+      toast.error(`Failed to read file: ${message}`)
     }
   }
 

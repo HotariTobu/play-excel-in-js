@@ -3,10 +3,10 @@ import { cn } from "@/utils/merge-class"
 import { FileArea } from "./file-area"
 
 export const ImageFileArea = (props: { className?: string; onUpload: (file: File) => void }) => {
-  const [imageUrl, setImageFileForBlobUrl] = useBlobUrl()
+  const [imageUrl, setImageFile] = useBlobUrl()
 
   const handleUpload = (file: File) => {
-    setImageFileForBlobUrl(file)
+    setImageFile(file)
     props.onUpload(file)
   }
 

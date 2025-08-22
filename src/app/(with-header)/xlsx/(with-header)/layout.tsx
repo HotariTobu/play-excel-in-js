@@ -5,7 +5,7 @@ export default function Layout(props: { children: React.ReactNode }) {
   return (
     <>
       <Button asChild variant="link">
-        <Link href="/">Home</Link>
+        <Link href="/xlsx">XLSX</Link>
       </Button>
       {props.children}
     </>

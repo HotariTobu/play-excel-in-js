@@ -35,9 +35,10 @@ const readSheet = (buf: ArrayBuffer) => {
 type SetFile = (file: File) => void
 
 const useSheetHtml = (): [LazyResult<string>, SetFile] => {
-  const [sheetHtmlResult, { handleSuccess, handleError }] = useLazyResult<string>()
+  const [sheetHtmlResult, { handleLoading, handleSuccess, handleError }] = useLazyResult<string>()
 
   const setSheetFile = async (file: File) => {
+    handleLoading()
     const result = await readFileAsArrayBuffer(file)
     if (result.success) {
       const worksheet = readSheet(result.data)
@@ -70,7 +71,7 @@ export default function Page() {
     <>
       <FileArea
         className="border border-gray-300 hover:border-gray-400 border-dashed rounded-md p-4 flex flex-col items-center justify-center"
-        accept=".xlsx"
+        accept=".xlsx,.xls"
         disabled={sheetHtmlResult.status === "loading"}
         onUpload={handleXlsxUpload}
       >

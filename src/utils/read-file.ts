@@ -1,67 +1,17 @@
 import type { Result } from "@/types/result"
+import { asError } from "./as-error"
 
-const createReader = (
-  onLoad: (result: string | ArrayBuffer | null) => void,
-  onError: (error: Error) => void
-) => {
-  const reader = new FileReader()
-  reader.onload = () => {
-    onLoad(reader.result)
+export const readFileAsArrayBuffer = async (file: File): Promise<Result<ArrayBuffer>> => {
+  try {
+    const arrayBuffer = await file.arrayBuffer()
+    return {
+      success: true,
+      data: arrayBuffer,
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: asError(error),
+    }
   }
-  reader.onerror = () => {
-    onError(reader.error ?? new Error("Failed to read file"))
-  }
-  return reader
 }
-
-export const readFileAsArrayBuffer = (file: File) =>
-  new Promise<Result<ArrayBuffer>>((resolve) => {
-    const reader = createReader(
-      (data) => {
-        if (data instanceof ArrayBuffer) {
-          resolve({
-            success: true,
-            data,
-          })
-        } else {
-          resolve({
-            success: false,
-            error: new Error("Invalid file"),
-          })
-        }
-      },
-      (error) => {
-        resolve({
-          success: false,
-          error,
-        })
-      }
-    )
-    reader.readAsArrayBuffer(file)
-  })
-
-export const readFileAsDataUrl = (file: File) =>
-  new Promise<Result<string>>((resolve) => {
-    const reader = createReader(
-      (data) => {
-        if (typeof data === "string") {
-          resolve({
-            success: true,
-            data,
-          })
-        } else {
-          resolve({
-            success: false,
-            error: new Error("Invalid file"),
-          })
-        }
-      },
-      (error) => {
-        resolve({
-          success: false,
-          error,
-        })
-      }
-    )
-    reader.readAsDataURL(file)
-  })
